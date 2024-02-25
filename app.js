@@ -19,14 +19,14 @@ ${cl.c}•${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array me
 ${cl.c}•${cl.rs} Enter "${cl.y}E${cl.rs}" to start the exercises: `;
 let answerText = `${cl.c}Answer ${cl.rs}(${cl.g}Y${cl.rs}es, ${cl.r}N${cl.rs}o, ${cl.y}S${cl.rs}kip, ${cl.b}R${cl.rs}esult): `;
 let warningText = `\n${cl.y}That is not a valid shortcut!${cl.rs}`;
-let closingText = `\n${cl.m}The game has been closed. Goodbye!${cl.rs}\n`;
+let closingText = `\n${cl.m}---------------------- Goodbye! ---------------------- ${cl.rs}`;
 let listText = `\n${cl.y}Here is the list of selected array methods:${cl.rs}`;
 let methodsText = `${cl.m}You should refresh your knowledge on the following methods:${cl.rs}`;
 let goodLuckText = `\n${cl.c}―――――― Good luck! ――――――${cl.rs}`;
 let trueText = `${cl.g}--> True!${cl.rs}`;
 let falseText = `${cl.r}--> False!${cl.rs}`;
 let exFalseText = `${cl.r}--> False!${cl.rs} The answer is:`;
-let exerciseText = `${cl.w}Which method should you use in order to get this output? Fill out by typing any letter.\n(Press ${cl.m}'1'${cl.w} to ${cl.m}go back ${cl.w}to the main menu, ${cl.g}'2'${cl.w} to ${cl.g}check${cl.w} the answer, ${cl.r}space bar${cl.w} to ${cl.r}skip${cl.w} the question)${cl.rs}`;
+let exerciseText = `${cl.c}Which method should you use in order to get this output? Fill out by typing any letter.${cl.rs}\n${cl.w}(Press ${cl.m}'1'${cl.w} to ${cl.m}go back ${cl.w}to the main menu, ${cl.g}'2'${cl.w} to ${cl.g}check${cl.w} the answer, ${cl.r}space bar${cl.w} to ${cl.r}skip${cl.w} the question)${cl.rs}`;
 let nextQuest = `\n${cl.y}Press space bar for the next question${cl.rs}`;
 
 //------------------------------------- GAME -------------------------------------
@@ -41,8 +41,8 @@ function game() {
     //START THE GAME
     case "s":
       console.log(goodLuckText);
-      start();
 
+      start();
       function start() {
         //create random numbers
         let ranMet = Math.floor(Math.random() * allQuestions.length);
@@ -129,6 +129,8 @@ function game() {
       let ranEx, exercise, method, splittedMethod, placeholders;
       let keysEntered = [];
 
+      process.stdout.write("\x1bc");
+
       process.stdin.setRawMode(true);
       process.stdin.resume();
       process.stdin.setEncoding("utf8");
@@ -136,7 +138,6 @@ function game() {
 
       exercisePrepare();
       function exercisePrepare() {
-        console.clear();
         ranEx = Math.floor(Math.random() * exercises.length);
         exercise = exercises[ranEx].exercise;
         method = exercises[ranEx].name;
@@ -146,8 +147,6 @@ function game() {
           ""
         );
         exercise = exercise.replace(method, placeholders);
-
-        console.clear();
         console.log(exerciseText);
         console.log("\n" + exercise);
       }
@@ -155,6 +154,7 @@ function game() {
       function exerciseCheck(key) {
         //back to main menu by 1
         if (key === "1") {
+          console.log(closingText);
           process.exit();
           //check the answer by 2
         } else if (key === "2") {
@@ -166,7 +166,10 @@ function game() {
           //skip by space bar
         } else if (key === " ") {
           keysEntered = [];
+          console.clear();
           exercisePrepare();
+        } else if (key === "3") {
+          game();
 
           //if a letter entered, replace the placeholder with it
         } else if (letters.includes(key.toUpperCase())) {
@@ -190,7 +193,7 @@ function game() {
 
     //SHOW A WARNING (if the entered shortcut is invalid)
     default:
-      console.log(warningText);
+      console.log(warningText + "\n");
       game();
   }
 }
