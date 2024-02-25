@@ -10,18 +10,23 @@ allQuestions.forEach((question) => methodsList.push(question.name));
 methodsList.sort((a, b) => a.localeCompare(b));
 
 //logs
-let startText = `Welcome! To start the game, press ${cl.g}"S"${cl.rs}. To quit, press ${cl.m}"Q"${cl.rs}.To see the list of selected array methods, press ${cl.b}"L"${cl.rs}. For Exercise-Mode, press "${cl.y}E${cl.rs}": `;
+let startText = `${cl.c}---------------------- Welcome! ---------------------- ${cl.rs}
+${cl.c}|${cl.rs} Enter ${cl.g}"S"${cl.rs} to start
+${cl.c}|${cl.rs} Enter ${cl.m}"Q"${cl.rs} to quit
+${cl.c}|${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array methods
+${cl.c}|${cl.rs} Enter "${cl.y}E${cl.rs}" for Exercise-Mode: `;
 let answerText = `Answer ${cl.rs}(${cl.g}Y${cl.rs}es, ${cl.r}N${cl.rs}o, ${cl.y}S${cl.rs}kip, ${cl.b}R${cl.rs}esult): `;
 let warningText = `\n${cl.y}That is not a valid shortcut!${cl.rs}`;
-let backText = `Press "B" to go back to main menu`;
 let closingText = `\n${cl.m}The game has been closed. Goodbye!${cl.rs}\n`;
 let listText = `\n${cl.y}Here is the list of selected array methods:${cl.rs}`;
-let methodsText = `\n${cl.m}You should refresh your knowledge on the following methods:${cl.rs}`;
-let goodLuckText = `${cl.c}―――――― Here are the questions. Good luck! ――――――${cl.rs}`;
-let trueText = `\n${cl.g}True!${cl.rs}`;
-let falseText = `\n${cl.r}False!${cl.rs} ${cl.w}True answer is:${cl.rs}`;
+let methodsText = `${cl.m}You should refresh your knowledge on the following methods:${cl.rs}\n`;
+let goodLuckText = `\n\n${cl.c}―――――― Good luck! ――――――${cl.rs}`;
+let trueText = `\n${cl.g}--> True!${cl.rs}`;
+let falseText = `\n${cl.r}--> False!${cl.rs}`;
 let exerciseText = `${cl.y}Which method should you use in order to get this output? Fill out by typing any letter. \n(Press ${cl.m}'1'${cl.y} to ${cl.m}go back ${cl.y}to the main menu, ${cl.g}'2'${cl.y} to ${cl.g}check${cl.y} the answer, ${cl.r}space bar${cl.y} to ${cl.r}skip${cl.y} the question)${cl.rs}`;
 let nextQuest = `${cl.y}Press space bar for the next question${cl.rs}`;
+
+console.clear();
 
 //-------------------- GAME --------------------
 function game() {
@@ -34,7 +39,6 @@ function game() {
   switch (answer) {
     //START THE GAME
     case "s":
-      console.clear();
       console.log(goodLuckText);
       start();
       function start() {
@@ -80,14 +84,12 @@ function game() {
             start();
           } else if (answer === "r") {
             console.log(
-              `\n${cl.b}Result${cl.rs}: You have ${cl.g}${trueAns} true ${cl.rs}answer(s) and ${cl.r}${falseAns} false${cl.rs} answer(s).`
+              `\n${cl.b}Result${cl.rs}: You have ${cl.g}${trueAns} true ${cl.rs}answer(s) and ${cl.r}${falseAns} false${cl.rs} answer(s).\n`
             );
-            console.log(backText);
             if (toRef.length > 0) {
               console.log(methodsText, `${cl.b}${toRef.join(", ")}${cl.rs}`);
             }
             game();
-            return;
           } else {
             do {
               console.log(warningText);
