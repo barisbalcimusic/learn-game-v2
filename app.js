@@ -4,6 +4,8 @@ import { exercises } from "./exercises.js";
 import { letters } from "./letters.js";
 import { cl } from "./colors.js";
 
+process.stdout.write("\x1bc"); // console.clear()-Alternative
+
 //create a sorted list with selected array methods
 let methodsList = [];
 allQuestions.forEach((question) => methodsList.push(question.name));
@@ -11,24 +13,23 @@ methodsList.sort((a, b) => a.localeCompare(b));
 
 //logs
 let startText = `${cl.c}---------------------- Welcome! ---------------------- ${cl.rs}
-${cl.c}|${cl.rs} Enter ${cl.g}"S"${cl.rs} to start
-${cl.c}|${cl.rs} Enter ${cl.m}"Q"${cl.rs} to quit
-${cl.c}|${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array methods
-${cl.c}|${cl.rs} Enter "${cl.y}E${cl.rs}" for Exercise-Mode: `;
-let answerText = `Answer ${cl.rs}(${cl.g}Y${cl.rs}es, ${cl.r}N${cl.rs}o, ${cl.y}S${cl.rs}kip, ${cl.b}R${cl.rs}esult): `;
+${cl.c}•${cl.rs} Enter ${cl.g}"S"${cl.rs} to start the quiz
+${cl.c}•${cl.rs} Enter ${cl.m}"Q"${cl.rs} to quit the application
+${cl.c}•${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array methods
+${cl.c}•${cl.rs} Enter "${cl.y}E${cl.rs}" to start the exercises: `;
+let answerText = `${cl.c}Answer ${cl.rs}(${cl.g}Y${cl.rs}es, ${cl.r}N${cl.rs}o, ${cl.y}S${cl.rs}kip, ${cl.b}R${cl.rs}esult): `;
 let warningText = `\n${cl.y}That is not a valid shortcut!${cl.rs}`;
 let closingText = `\n${cl.m}The game has been closed. Goodbye!${cl.rs}\n`;
 let listText = `\n${cl.y}Here is the list of selected array methods:${cl.rs}`;
-let methodsText = `${cl.m}You should refresh your knowledge on the following methods:${cl.rs}\n`;
-let goodLuckText = `\n\n${cl.c}―――――― Good luck! ――――――${cl.rs}`;
-let trueText = `\n${cl.g}--> True!${cl.rs}`;
-let falseText = `\n${cl.r}--> False!${cl.rs}`;
-let exerciseText = `${cl.y}Which method should you use in order to get this output? Fill out by typing any letter. \n(Press ${cl.m}'1'${cl.y} to ${cl.m}go back ${cl.y}to the main menu, ${cl.g}'2'${cl.y} to ${cl.g}check${cl.y} the answer, ${cl.r}space bar${cl.y} to ${cl.r}skip${cl.y} the question)${cl.rs}`;
-let nextQuest = `${cl.y}Press space bar for the next question${cl.rs}`;
+let methodsText = `${cl.m}You should refresh your knowledge on the following methods:${cl.rs}`;
+let goodLuckText = `\n${cl.c}―――――― Good luck! ――――――${cl.rs}`;
+let trueText = `${cl.g}--> True!${cl.rs}`;
+let falseText = `${cl.r}--> False!${cl.rs}`;
+let exFalseText = `${cl.r}--> False!${cl.rs} The answer is:`;
+let exerciseText = `${cl.w}Which method should you use in order to get this output? Fill out by typing any letter.\n(Press ${cl.m}'1'${cl.w} to ${cl.m}go back ${cl.w}to the main menu, ${cl.g}'2'${cl.w} to ${cl.g}check${cl.w} the answer, ${cl.r}space bar${cl.w} to ${cl.r}skip${cl.w} the question)${cl.rs}`;
+let nextQuest = `\n${cl.y}Press space bar for the next question${cl.rs}`;
 
-console.clear();
-
-//-------------------- GAME --------------------
+//------------------------------------- GAME -------------------------------------
 function game() {
   let trueAns = 0;
   let falseAns = 0;
@@ -41,6 +42,7 @@ function game() {
     case "s":
       console.log(goodLuckText);
       start();
+
       function start() {
         //create random numbers
         let ranMet = Math.floor(Math.random() * allQuestions.length);
@@ -54,23 +56,8 @@ function game() {
         let explanation = allQuestions[ranMet].questions[ranQue].explanation;
         let method = allQuestions[ranMet].name;
 
-        console.log(`\n${cl.y}Question:${cl.rs} ${question}${cl.y}`);
+        console.log(`\n${cl.c}Question:${cl.rs} ${question}`);
         answer = readlineSync.question(answerText).toLowerCase();
-
-        function trueAnswer() {
-          console.log(trueText);
-          trueAns++;
-          console.log(`${cl.b}--> ${explanation}${cl.rs}`);
-          start();
-        }
-
-        function falseAnswer() {
-          console.log(falseText);
-          falseAns++;
-          if (!toRef.includes(method)) toRef.push(method);
-          console.log(`${cl.b}--> ${explanation}${cl.rs}`);
-          start();
-        }
 
         answerCheck();
         function answerCheck() {
@@ -87,17 +74,37 @@ function game() {
               `\n${cl.b}Result${cl.rs}: You have ${cl.g}${trueAns} true ${cl.rs}answer(s) and ${cl.r}${falseAns} false${cl.rs} answer(s).\n`
             );
             if (toRef.length > 0) {
-              console.log(methodsText, `${cl.b}${toRef.join(", ")}${cl.rs}`);
+              console.log(methodsText, `${cl.b}${toRef.join(", ")}${cl.rs}\n`);
             }
             game();
           } else {
             do {
               console.log(warningText);
-              console.log(`\n${cl.y}Question:${cl.rs} ${question}${cl.y}`);
+              console.log(`\n${cl.c}Question:${cl.rs} ${question}${cl.y}`);
               answer = readlineSync.question(answerText).toLowerCase();
-            } while (answer !== "y" && answer !== "n" && answer !== "r");
+            } while (
+              answer !== "y" &&
+              answer !== "n" &&
+              answer !== "r" &&
+              answer !== "s"
+            );
             answerCheck();
           }
+        }
+
+        function trueAnswer() {
+          console.log(trueText);
+          trueAns++;
+          console.log(`${cl.b}--> ${explanation}${cl.rs}`);
+          start();
+        }
+
+        function falseAnswer() {
+          console.log(falseText);
+          falseAns++;
+          if (!toRef.includes(method)) toRef.push(method);
+          console.log(`${cl.b}--> ${explanation}${cl.rs}`);
+          start();
         }
       }
       break;
@@ -108,6 +115,7 @@ function game() {
       methodsList.forEach((element) => {
         console.log(`${cl.c}» ${element}()${cl.rs}`);
       });
+      console.log();
       game();
       break;
 
@@ -142,7 +150,6 @@ function game() {
         console.clear();
         console.log(exerciseText);
         console.log("\n" + exercise);
-        console.log(method); // -
       }
 
       function exerciseCheck(key) {
@@ -153,7 +160,7 @@ function game() {
         } else if (key === "2") {
           isIncluded()
             ? console.log(trueText)
-            : console.log(falseText, `${cl.g}${method}${cl.rs}`);
+            : console.log(exFalseText, `${cl.g}${method}${cl.rs}`);
           console.log(nextQuest);
 
           //skip by space bar
@@ -168,9 +175,6 @@ function game() {
           console.log(exerciseText);
           console.log("\n" + exercise);
           keysEntered.push(key);
-
-          console.log(keysEntered); //-
-          console.log(method); //-
         }
       }
 
