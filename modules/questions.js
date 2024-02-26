@@ -1,4 +1,4 @@
-export const allQuestions = [
+export const questionsObj = [
   {
     name: "concat",
     questions: [
