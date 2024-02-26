@@ -1,22 +1,22 @@
 import readlineSync from "readline-sync";
-import { allQuestions } from "./questions.js";
-import { exercises } from "./exercises.js";
-import { letters } from "./letters.js";
-import { cl } from "./colors.js";
+import { questionsObj } from "./modules/questions.js";
+import { exercises } from "./modules/exercises.js";
+import { letters } from "./modules/letters.js";
+import { cl } from "./modules/colors.js";
 
 process.stdout.write("\x1bc"); // console.clear()-Alternative
 
 //create a sorted list with selected array methods
 let methodsList = [];
-allQuestions.forEach((question) => methodsList.push(question.name));
+questionsObj.forEach((question) => methodsList.push(question.name));
 methodsList.sort((a, b) => a.localeCompare(b));
 
 //logs
 let startText = `${cl.c}---------------------- Welcome! ---------------------- ${cl.rs}
-${cl.c}•${cl.rs} Enter ${cl.g}"S"${cl.rs} to start the quiz
-${cl.c}•${cl.rs} Enter ${cl.m}"Q"${cl.rs} to quit the application
-${cl.c}•${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array methods
-${cl.c}•${cl.rs} Enter "${cl.y}E${cl.rs}" to start the exercises: `;
+${cl.c}-${cl.rs} Enter ${cl.g}"S"${cl.rs} to start the quiz
+${cl.c}-${cl.rs} Enter ${cl.m}"Q"${cl.rs} to quit the application
+${cl.c}-${cl.rs} Enter ${cl.b}"L"${cl.rs} to see the list of selected array methods
+${cl.c}-${cl.rs} Enter "${cl.y}E${cl.rs}" to start the exercises: `;
 let answerText = `${cl.c}Answer ${cl.rs}(${cl.g}Y${cl.rs}es, ${cl.r}N${cl.rs}o, ${cl.y}S${cl.rs}kip, ${cl.b}R${cl.rs}esult): `;
 let warningText = `\n${cl.y}That is not a valid shortcut!${cl.rs}`;
 let closingText = `\n${cl.m}---------------------- Goodbye! ---------------------- ${cl.rs}`;
@@ -28,12 +28,30 @@ let falseText = `${cl.r}--> False!${cl.rs}`;
 let exFalseText = `${cl.r}--> False!${cl.rs} The answer is:`;
 let exerciseText = `${cl.c}Which method should you use in order to get this output? Fill out by typing any letter.${cl.rs}\n${cl.w}(Press ${cl.m}'1'${cl.w} to ${cl.m}go back ${cl.w}to the main menu, ${cl.g}'2'${cl.w} to ${cl.g}check${cl.w} the answer, ${cl.r}space bar${cl.w} to ${cl.r}skip${cl.w} the question)${cl.rs}`;
 let nextQuest = `\n${cl.y}Press space bar for the next question${cl.rs}`;
+let jokeText = `${cl.g}Smile!:${cl.rs}`;
+
+//get random joke via API
+async function fetchData() {
+  try {
+    const response = await fetch("https://icanhazdadjoke.com/", {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Fetch işlemi başarısız oldu:", error);
+    return null;
+  }
+}
 
 //------------------------------------- GAME -------------------------------------
 function game() {
   let trueAns = 0;
   let falseAns = 0;
   let toRef = [];
+  let myJoke;
 
   let answer = readlineSync.question(startText).toLowerCase();
 
@@ -45,16 +63,16 @@ function game() {
       start();
       function start() {
         //create random numbers
-        let ranMet = Math.floor(Math.random() * allQuestions.length);
+        let ranMet = Math.floor(Math.random() * questionsObj.length);
         let ranQue = Math.floor(
-          Math.random() * allQuestions[0].questions.length
+          Math.random() * questionsObj[0].questions.length
         );
 
         //select from object
-        let question = allQuestions[ranMet].questions[ranQue].question;
-        let correctAnswer = allQuestions[ranMet].questions[ranQue].answer;
-        let explanation = allQuestions[ranMet].questions[ranQue].explanation;
-        let method = allQuestions[ranMet].name;
+        let question = questionsObj[ranMet].questions[ranQue].question;
+        let correctAnswer = questionsObj[ranMet].questions[ranQue].answer;
+        let explanation = questionsObj[ranMet].questions[ranQue].explanation;
+        let method = questionsObj[ranMet].name;
 
         console.log(`\n${cl.c}Question:${cl.rs} ${question}`);
         answer = readlineSync.question(answerText).toLowerCase();
@@ -97,11 +115,13 @@ function game() {
           console.log(`${cl.b}--> ${explanation}${cl.rs}`);
           start();
         }
-        function falseAnswer() {
+        async function falseAnswer() {
           console.log(falseText);
           falseAns++;
           if (!toRef.includes(method)) toRef.push(method);
           console.log(`${cl.b}--> ${explanation}${cl.rs}`);
+          myJoke = await fetchData();
+          console.log(jokeText, myJoke.joke, ":)");
           start();
         }
       }
@@ -154,6 +174,7 @@ function game() {
         if (key === "1") {
           console.log(closingText);
           process.exit();
+
           //check the answer by 2
         } else if (key === "2") {
           isIncluded()
@@ -195,14 +216,3 @@ function game() {
 }
 //run the game
 game();
-
-joke();
-function joke() {
-  fetch("https://icanhazdadjoke.com/", {
-    headers: {
-      Accept: "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => console.log(data.joke));
-}
