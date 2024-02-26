@@ -91,14 +91,12 @@ function game() {
             answerCheck();
           }
         }
-
         function trueAnswer() {
           console.log(trueText);
           trueAns++;
           console.log(`${cl.b}--> ${explanation}${cl.rs}`);
           start();
         }
-
         function falseAnswer() {
           console.log(falseText);
           falseAns++;
@@ -168,8 +166,6 @@ function game() {
           keysEntered = [];
           console.clear();
           exercisePrepare();
-        } else if (key === "3") {
-          game();
 
           //if a letter entered, replace the placeholder with it
         } else if (letters.includes(key.toUpperCase())) {
@@ -199,3 +195,14 @@ function game() {
 }
 //run the game
 game();
+
+joke();
+function joke() {
+  fetch("https://icanhazdadjoke.com/", {
+    headers: {
+      Accept: "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data.joke));
+}
